@@ -1,8 +1,9 @@
-
 const OnboardingPage = () => {
   return (
-    <div>OnboardingPage</div>
-  )
-}
+    <main>
+      <h1 className="head-text">Onboarding</h1>
+    </main>
+  );
+};
 
-export default OnboardingPage
+export default OnboardingPage;
