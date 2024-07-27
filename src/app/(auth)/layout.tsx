@@ -1,7 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { dark } from "@clerk/themes";
 export const metadata = {
   title: "Threads",
   description: "A Next.js Meta Threads Application",
@@ -17,7 +17,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       <html lang="en">
-        <body className={`${inter.className} bg-dark-1`}>{children}</body>
+        <body
+          className={`${inter.className} bg-dark-1 h-screen w-full flex items-center justify-center`}
+        >
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
