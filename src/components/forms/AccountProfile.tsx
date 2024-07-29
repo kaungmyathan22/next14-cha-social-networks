@@ -19,6 +19,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+import { updateUser } from "@/lib/actions/user.actions";
+import { useUploadThing } from "@/lib/uploadthing";
+import { isBase64Image } from "@/lib/utils";
 import { UserValidation } from "@/lib/validations/user";
 
 interface Props {
@@ -36,7 +39,8 @@ interface Props {
 const AccountProfile = ({ user, btnTitle }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
-
+  const [isPending, setIsPending] = useState(false);
+  const { startUpload } = useUploadThing("media");
   const [files, setFiles] = useState<File[]>([]);
 
   const form = useForm<z.infer<typeof UserValidation>>({
@@ -50,12 +54,35 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
-    const blob = values.profile_photo;
+    setIsPending(true);
+    try {
+      const blob = values.profile_photo;
+      const hasImageChanged = isBase64Image(blob);
+      if (hasImageChanged) {
+        const imgRes: any[] = (await startUpload(files)) as any[];
+        if (imgRes && imgRes[0].fileUrl) {
+          values.profile_photo = imgRes[0].fileUrl;
+        }
+      }
 
-    if (pathname === "/profile/edit") {
-      router.back();
-    } else {
-      router.push("/");
+      await updateUser({
+        name: values.name,
+        path: pathname,
+        username: values.username,
+        userId: user.id,
+        bio: values.bio,
+        image: values.profile_photo,
+      });
+
+      if (pathname === "/profile/edit") {
+        router.back();
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -101,7 +128,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                     width={96}
                     height={96}
                     priority
-                    className="object-contain rounded-full"
+                    className="object-cover w-full h-full rounded-full "
                   />
                 ) : (
                   <Image
@@ -186,7 +213,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
           )}
         />
 
-        <Button type="submit" className="bg-primary-500">
+        <Button disabled={isPending} type="submit" className="bg-primary-500">
           {btnTitle}
         </Button>
       </form>
