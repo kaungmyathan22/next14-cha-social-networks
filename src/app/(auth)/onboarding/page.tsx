@@ -1,3 +1,4 @@
+import Client from "@/components/Client";
 import AccountProfile from "@/components/forms/AccountProfile";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -22,7 +23,9 @@ const OnboardingPage = async () => {
         Complete your profile now, to use Threds.
       </p>
       <section className="p-10 mt-9 bg-dark-2">
-        <AccountProfile user={userData} btnTitle="Continue" />
+        <Client>
+          <AccountProfile user={userData} btnTitle="Continue" />
+        </Client>
       </section>
     </main>
   );
