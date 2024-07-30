@@ -3,8 +3,8 @@ import { dark } from "@clerk/themes";
 import { Inter } from "next/font/google";
 import "../globals.css";
 export const metadata = {
-  title: "Threads",
-  description: "A Next.js Meta Threads Application",
+  title: "Cha Social",
+  description: "A Next.js Meta Cha Social Application",
 };
 
 const inter = Inter({ subsets: ["latin"] });
